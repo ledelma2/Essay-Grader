@@ -6,6 +6,11 @@ Created on Wed Apr 18 12:43:33 2018
 """
 
 import nltk
+nltk.download('wordnet')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('treebank')
 import re
 import os
 from bisect import bisect_left
