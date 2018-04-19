@@ -137,7 +137,9 @@ for file in files:
     else:
         spell_score = 4
 
-    results.write(str(spell_score) + ";\n")
+    results.write(str(spell_score) + ";")
+
+    results.write("0;0;0;0;0;0;UNKNOWN\n")
     
 #    Verb agreement score
 #    sentences = nltk.sent_tokenize(essay)
