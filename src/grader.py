@@ -2,12 +2,39 @@
 """
 Created on Wed Apr 18 12:43:33 2018
 
-@author: Liam Edelman
+@author: Liam Edelman and Corey Habel
 """
 
 import nltk
-import string
+import re
 import os
+
+EssayFile = open("test.txt", "r")
+essay = EssayFile.read()
+
+punc = "!\"#$%&()*+,-./:;<=>?@[\]^_`{|}~"
+nopunc = ''.join(word for word in essay if word not in punc)
+tokens = re.split(" |\n|\t", nopunc)
+indices = []
+for i in range (0, len(tokens)):
+    if len(tokens[i]) == 0:
+        indices.insert(0, i)
+
+for i in range (0, len(indices)):
+    del tokens[indices[i]]
+
+print(len(tokens))
+  
+mistakes = 0
+
+for words in tokens:
+    array = len(nltk.corpus.wordnet.synsets(words))
+    if array < 1:
+        print(words)
+        mistakes = mistakes + 1
+
+
+# -*- coding: utf-8 -*-
 
 results = open("../output/results.txt", "w")
 
@@ -18,7 +45,7 @@ for file in files:
 	essay = open("../input/essays/" + file, "r").read()
 
 	indices = []
-	nopunc = ''.join(word for word in essay if word not in string.punctuation)
+	nopunc = ''.join(word for word in essay if word not in punc)
 	tokens = nltk.word_tokenize(nopunc)
   
 	
