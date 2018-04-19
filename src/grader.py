@@ -67,69 +67,13 @@ def binary_search(a, x, lo=0, hi=None):
 results = open("../output/results.txt", "w")
 
 # Store every file in the input folder
-files = os.listdir("../input/essays/")
+files = os.listdir("../input/testing/essays/")
 
 # Loop through and score every file
 for file in files:
-<<<<<<< HEAD
-	essay = open("../input/essays/" + file, "r").read()
-
-	# Tokenize every word
-	indices = []
-	nopunc = ''.join(word for word in essay if word not in string.punctuation)
-	tokens = nltk.word_tokenize(nopunc)
-
-
-	# Word length score
-	length_score = 0
-	word_count = len(tokens)
-
-	if word_count < 150:
-		length_score = 1
-
-	elif word_count < 200:
-		length_score = 2
-
-	elif word_count < 250:
-		length_score = 3
-
-	elif word_count < 300:
-		length_score = 4
-
-	else:
-		length_score = 5
-
-
-	# Verb agreement score
-	sentences = nltk.sent_tokenize(essay)
-
-	for sentence in sentences:
-		tokenized_sent = nltk.word_tokenize(sentence)
-		pos_sent = nltk.pos_tag(tokenized_sent)
-
-		mistakes = 0
-
-
-		for tup in pos_sent:
-			if 'NN' in tup:
-				for tup in pos_sent:
-					if "VBZ" or "VBD" or "VBG" not in tup:
-						mistakes += 1
-					elif "VBG" and 
 				
-
-
-
-
-	# Write results to file
-	results.write(file + ";")
-	results.write(str(length_score) + ";\n")
-
-
-results.close()	
-=======
     mistakes = 0
-    essay = open("../input/essays/" + file, "r").read()
+    essay = open("../input/testing/essays/" + file, "r").read()
     
     nopunc = ''.join(word for word in essay if word not in punc)
     tokens = re.split(" |\n|\t", nopunc)
@@ -176,7 +120,6 @@ results.close()
              mistakes = mistakes + 1
     
     percent_wrong = mistakes / word_count
-    print(percent_wrong)
     
     if percent_wrong > .12:
         spell_score = 0
@@ -190,8 +133,21 @@ results.close()
         spell_score = 4
 
     results.write(str(spell_score) + ";\n")
+    
+#    Verb agreement score
+#    sentences = nltk.sent_tokenize(essay)
+#    
+#    for sentence in sentences:
+#        tokenized_sent = nltk.word_tokenize(sentence)
+#        pos_sent = nltk.pos_tag(tokenized_sent)
+#        
+#    for tup in pos_sent:
+#        if 'NN' in tup:
+#            for tup in pos_sent:
+#                if "VBZ" or "VBD" or "VBG" not in tup:
+#                    mistakes += 1
+#                elif "VBG" and 
 
 
 
 results.close()	
->>>>>>> 8b0dd1e427c5f08abce809e5645999e16707df20
