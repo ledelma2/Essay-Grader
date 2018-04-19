@@ -1,0 +1,11 @@
+# EssayGrader
+Essay Grader Project for CS 421 (Natural Language Processing)
+
+Project 1 for CS421 - University of Illinois at Chicago (UIC)
+Name 1: ledelma2@uic.edu
+Name 2: chabel2@uic.edu
+
+Be sure to install nltk on your machine by going to the command line of your OS and typing in "pip install nltk".
+Then enter the command "python grader.py".
+The grader will automatically grab essays from the input/testing/essays folder and run them through the algorithm.
+The output will be a txt file called results.txt and will be located in the output folder.
