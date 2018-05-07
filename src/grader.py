@@ -95,10 +95,7 @@ for file in files:
     length_score = 0
     word_count = len(tokens)
     
-    if word_count  < 100:
-        length_score = 0
-    
-    elif word_count < 150:
+    if word_count < 150:
         length_score = 1
     
     elif word_count < 200:
@@ -137,9 +134,22 @@ for file in files:
     else:
         spell_score = 4
 
+    final_score = 2 * length_score - spell_score;
+
+    score = ""
+
+    if final_score > 6:
+    	score = "high"
+    else:
+    	score = "low"
+
+
+
     results.write(str(spell_score) + ";")
 
-    results.write("0;0;0;0;0;0;UNKNOWN\n")
+    results.write("0;0;0;0;0;0;")
+
+    results.write(score + '\n')
     
 #    Verb agreement score
 #    sentences = nltk.sent_tokenize(essay)
