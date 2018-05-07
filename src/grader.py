@@ -151,19 +151,7 @@ for file in files:
 
     results.write(score + '\n')
     
-#    Verb agreement score
-#    sentences = nltk.sent_tokenize(essay)
-#    
-#    for sentence in sentences:
-#        tokenized_sent = nltk.word_tokenize(sentence)
-#        pos_sent = nltk.pos_tag(tokenized_sent)
-#        
-#    for tup in pos_sent:
-#        if 'NN' in tup:
-#            for tup in pos_sent:
-#                if "VBZ" or "VBD" or "VBG" not in tup:
-#                    mistakes += 1
-#                elif "VBG" and 
+
 
 
 
