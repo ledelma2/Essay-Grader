@@ -15,6 +15,8 @@ import re
 import os
 from bisect import bisect_left
 
+from stanfordcorenlp import StanfordCoreNLP
+
 punc = "!\"#$%&()*+,-./:;<=>?@[\]^_`{|}~"
 
 dictionary = open("../src/resources/dictionary.txt", "r")
@@ -90,8 +92,9 @@ for file in files:
     for i in range (0, len(indices)):
         del tokens[indices[i]]
     	
-    
+    ####################
     # Word length score
+    ####################
     length_score = 0
     word_count = len(tokens)
     
@@ -113,6 +116,10 @@ for file in files:
     results.write(file + ";")
     results.write(str(length_score) + ";")
 
+
+    #################
+    # Spelling Score
+    #################
     spell_score = 0
     
     for words in tokens:
@@ -144,13 +151,32 @@ for file in files:
     	score = "low"
 
 
+    ###################
+   	# Sentence Parsing
+   	###################
+
+   	
+
+
+
 
     results.write(str(spell_score) + ";")
 
     results.write("0;0;0;0;0;0;")
 
     results.write(score + '\n')
+
+print("Start Parsing:\n")
     
+nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
+
+sentence = 'Guangdong University of Foreign Studies is located in Guangzhou.'
+print('Tokenize:', nlp.word_tokenize(sentence))
+#print('Part of Speech:', nlp.pos_tag(sentence))
+print('Constituency Parsing:', nlp.parse(sentence))
+#print('Dependency Parsing:', nlp.dependency_parse(sentence))
+
+nlp.close()
 
 
 
