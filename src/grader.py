@@ -13,8 +13,8 @@ nltk.download('maxent_ne_chunker')
 nltk.download('treebank')
 import re
 import os
+from nltk import Tree
 from bisect import bisect_left
-
 from stanfordcorenlp import StanfordCoreNLP
 
 punc = "!\"#$%&()*+,-./:;<=>?@[\]^_`{|}~"
@@ -171,10 +171,12 @@ print("Start Parsing:\n")
 nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
 
 sentence = 'Guangdong University of Foreign Studies is located in Guangzhou.'
-print('Tokenize:', nlp.word_tokenize(sentence))
+#print('Tokenize:', nlp.word_tokenize(sentence))
 #print('Part of Speech:', nlp.pos_tag(sentence))
-print('Constituency Parsing:', nlp.parse(sentence))
+tree = nlp.parse(sentence)
 #print('Dependency Parsing:', nlp.dependency_parse(sentence))
+realtree = Tree.fromstring(tree)
+print(realtree[0])
 
 nlp.close()
 
