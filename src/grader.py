@@ -80,7 +80,7 @@ nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
 
 # Loop through and score every file
 for file in files:
-				
+    
     mistakes = 0
     essay = open("../input/testing/essays/" + file, "r").read()
     
@@ -93,7 +93,7 @@ for file in files:
     
     for i in range (0, len(indices)):
         del tokens[indices[i]]
-    	
+
     ####################
     # Word length score
     ####################
@@ -143,26 +143,55 @@ for file in files:
     else:
         spell_score = 4
 
-    final_score = 2 * length_score - spell_score;
-
-    score = ""
-
-    if final_score > 6:
-    	score = "high"
-    else:
-    	score = "low"
+    
 
 
     ###################
-   	# Sentence Parsing
-   	###################
-	
+    # Sentence Parsing
+    ###################
+    
     sentences = nltk.sent_tokenize(essay)
 
+    #print("next essay")
+
+    frags = 0
+
     for sentence in sentences:
-    	tokens = nlp.word_tokenize(sentence)
-    	#print('Constituency Parsing:', nlp.parse(sentence))
-   	
+        tokens = nlp.word_tokenize(sentence)
+        parsed = nlp.parse(sentence)
+        if 'FRAG' in parsed:
+            frags += 1
+
+    frag_score = 0
+
+    
+    coherence = 5
+
+    if frags > 3:
+        coherence -= 3
+    elif frags == 2:
+        coherence -= 1
+
+    coherence -= 4 - spell_score
+
+    if coherence < 0:
+        coherence = 0
+
+    
+
+
+    final_score = 2 * length_score - spell_score + 2 * coherence;
+
+    score = ""
+
+    if final_score > 9:
+        score = "high"
+        print(file,": high")
+    else:
+        score = "low"
+        print(file,": low")
+    
+    
     results.write(str(spell_score) + ";")
 
     results.write("0;0;0;0;0;0;")
@@ -181,12 +210,10 @@ tree = nlp.parse(sentence)
 
 #print('Dependency Parsing:', nlp.dependency_parse(sentence))
 realtree = Tree.fromstring(tree)
-print(realtree[0])
+#print(realtree[0])
 
-token_test = nlp.parse(sentence)
 
-if 'FRAG' in token_test:
-	print("frag")
+
 
 nlp.close()
 
