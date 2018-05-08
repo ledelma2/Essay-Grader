@@ -6,11 +6,11 @@ Created on Wed Apr 18 12:43:33 2018
 """
 
 import nltk
-nltk.download('wordnet')
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
-nltk.download('treebank')
+#nltk.download('wordnet')
+#nltk.download('punkt')
+#nltk.download('averaged_perceptron_tagger')
+#nltk.download('maxent_ne_chunker')
+#ltk.download('treebank')
 import re
 import os
 from nltk import Tree
@@ -75,6 +75,8 @@ results = open("../output/results.txt", "w")
 
 # Store every file in the input folder
 files = os.listdir("../input/testing/essays/")
+
+nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
 
 # Loop through and score every file
 for file in files:
@@ -154,29 +156,37 @@ for file in files:
     ###################
    	# Sentence Parsing
    	###################
+	
+    sentences = nltk.sent_tokenize(essay)
 
+    for sentence in sentences:
+    	tokens = nlp.word_tokenize(sentence)
+    	#print('Constituency Parsing:', nlp.parse(sentence))
    	
-
-
-
-
     results.write(str(spell_score) + ";")
 
     results.write("0;0;0;0;0;0;")
 
     results.write(score + '\n')
 
-print("Start Parsing:\n")
-    
-nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
 
+sentence = 'My dog with a broken leg I not want'
+#print('Tokenize:', nlp.word_tokenize(sentence))
+#print('Part of Speech:', nlp.pos_tag(sentence))
+#print('Constituency Parsing:', nlp.parse(sentence))
 sentence = 'Guangdong University of Foreign Studies is located in Guangzhou.'
 #print('Tokenize:', nlp.word_tokenize(sentence))
 #print('Part of Speech:', nlp.pos_tag(sentence))
 tree = nlp.parse(sentence)
+
 #print('Dependency Parsing:', nlp.dependency_parse(sentence))
 realtree = Tree.fromstring(tree)
 print(realtree[0])
+
+token_test = nlp.parse(sentence)
+
+if 'FRAG' in token_test:
+	print("frag")
 
 nlp.close()
 
