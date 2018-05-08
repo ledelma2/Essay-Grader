@@ -80,7 +80,7 @@ nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
 
 # Loop through and score every file
 for file in files:
-				
+    
     mistakes = 0
     essay = open("../input/testing/essays/" + file, "r").read()
     
@@ -93,7 +93,7 @@ for file in files:
     
     for i in range (0, len(indices)):
         del tokens[indices[i]]
-    	
+
     ####################
     # Word length score
     ####################
@@ -143,54 +143,80 @@ for file in files:
     else:
         spell_score = 4
 
-    final_score = 2 * length_score - spell_score;
-
-    score = ""
-
-    if final_score > 6:
-    	score = "high"
-    else:
-    	score = "low"
+    
 
 
     ###################
-   	# Sentence Parsing
-   	###################
-	
+    # Sentence Parsing
+    ###################
+    
     sentences = nltk.sent_tokenize(essay)
 
+    #print("next essay")
+
+    frags = 0
+
     for sentence in sentences:
-    	tokens = nlp.word_tokenize(sentence)
-    	#print('Constituency Parsing:', nlp.parse(sentence))
-   	
+        tokens = nlp.word_tokenize(sentence)
+        try:
+            parsed = nlp.parse(sentence)
+            if 'FRAG' in parsed:
+                frags += 1
+
+        except:
+            print(file)
+
+    frag_score = 0
+
+    
+    coherence = 5
+
+    if frags > 3:
+        coherence -= 3
+    elif frags == 2:
+        coherence -= 1
+
+    coherence -= 4 - spell_score
+
+    if coherence < 0:
+        coherence = 0
+
+    
+
+
+    final_score = 2 * length_score - spell_score + 2 * coherence;
+
+    score = ""
+
+    if final_score > 11:
+        score = "high"
+    else:
+        score = "low"
+    
+    print(file.rstrip(), ", ", score)
+    
+    
     results.write(str(spell_score) + ";")
 
-    results.write("0;0;0;0;0;0;")
+    results.write("0;0;")
 
-    results.write(score + '\n')
+    formation_score = 5 - frags
+    if formation_score < 0:
+    	formation_score = 0
 
 
-sentence = 'My dog with a broken leg I not want'
-#print('Tokenize:', nlp.word_tokenize(sentence))
-#print('Part of Speech:', nlp.pos_tag(sentence))
-#print('Constituency Parsing:', nlp.parse(sentence))
-sentence = 'Guangdong University of Foreign Studies is located in Guangzhou.'
-#print('Tokenize:', nlp.word_tokenize(sentence))
-#print('Part of Speech:', nlp.pos_tag(sentence))
-tree = nlp.parse(sentence)
+    results.write(str(formation_score) + ";")
 
-#print('Dependency Parsing:', nlp.dependency_parse(sentence))
-realtree = Tree.fromstring(tree)
-print(realtree[0])
+    results.write(str(coherence) + ";")
 
-token_test = nlp.parse(sentence)
+    results.write("0;")
 
-if 'FRAG' in token_test:
-	print("frag")
+    results.write(str(final_score) + ";")
+
+    results.write(score + '\n')	
+
+
 
 nlp.close()
-
-
-
 
 results.close()	
