@@ -170,11 +170,20 @@ for file in files:
     results.write(score + '\n')
 
 
+<<<<<<< HEAD
 sentence = 'My dog with a broken leg I not want'
 #print('Tokenize:', nlp.word_tokenize(sentence))
 #print('Part of Speech:', nlp.pos_tag(sentence))
 #print('Constituency Parsing:', nlp.parse(sentence))
+=======
+sentence = 'Guangdong University of Foreign Studies is located in Guangzhou.'
+#print('Tokenize:', nlp.word_tokenize(sentence))
+#print('Part of Speech:', nlp.pos_tag(sentence))
+tree = nlp.parse(sentence)
+>>>>>>> 8a2b0bb5ba43f08ca394012cdcadc61669b6133a
 #print('Dependency Parsing:', nlp.dependency_parse(sentence))
+realtree = Tree.fromstring(tree)
+print(realtree[0])
 
 token_test = nlp.parse(sentence)
 
