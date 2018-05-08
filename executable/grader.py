@@ -6,14 +6,16 @@ Created on Wed Apr 18 12:43:33 2018
 """
 
 import nltk
-nltk.download('wordnet')
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
-nltk.download('treebank')
+#nltk.download('wordnet')
+#nltk.download('punkt')
+#nltk.download('averaged_perceptron_tagger')
+#nltk.download('maxent_ne_chunker')
+#ltk.download('treebank')
 import re
 import os
+from nltk import Tree
 from bisect import bisect_left
+from stanfordcorenlp import StanfordCoreNLP
 
 punc = "!\"#$%&()*+,-./:;<=>?@[\]^_`{|}~"
 
@@ -74,9 +76,11 @@ results = open("../output/results.txt", "w")
 # Store every file in the input folder
 files = os.listdir("../input/testing/essays/")
 
+nlp = StanfordCoreNLP(r'resources\stanford-corenlp-full-2018-02-27')
+
 # Loop through and score every file
 for file in files:
-				
+    
     mistakes = 0
     essay = open("../input/testing/essays/" + file, "r").read()
     
@@ -89,16 +93,14 @@ for file in files:
     
     for i in range (0, len(indices)):
         del tokens[indices[i]]
-    	
-    
+
+    ####################
     # Word length score
+    ####################
     length_score = 0
     word_count = len(tokens)
     
-    if word_count  < 100:
-        length_score = 0
-    
-    elif word_count < 150:
+    if word_count < 150:
         length_score = 1
     
     elif word_count < 200:
@@ -116,6 +118,10 @@ for file in files:
     results.write(file + ";")
     results.write(str(length_score) + ";")
 
+
+    #################
+    # Spelling Score
+    #################
     spell_score = 0
     
     for words in tokens:
@@ -137,24 +143,80 @@ for file in files:
     else:
         spell_score = 4
 
+    
+
+
+    ###################
+    # Sentence Parsing
+    ###################
+    
+    sentences = nltk.sent_tokenize(essay)
+
+    #print("next essay")
+
+    frags = 0
+
+    for sentence in sentences:
+        tokens = nlp.word_tokenize(sentence)
+        try:
+            parsed = nlp.parse(sentence)
+            if 'FRAG' in parsed:
+                frags += 1
+
+        except:
+            print(file)
+
+    frag_score = 0
+
+    
+    coherence = 5
+
+    if frags > 3:
+        coherence -= 3
+    elif frags == 2:
+        coherence -= 1
+
+    coherence -= 4 - spell_score
+
+    if coherence < 0:
+        coherence = 0
+
+    
+
+
+    final_score = 2 * length_score - spell_score + 2 * coherence;
+
+    score = ""
+
+    if final_score > 11:
+        score = "high"
+    else:
+        score = "low"
+    
+    print(file.rstrip(), ", ", score)
+    
+    
     results.write(str(spell_score) + ";")
 
-    results.write("0;0;0;0;0;0;UNKNOWN\n")
-    
-#    Verb agreement score
-#    sentences = nltk.sent_tokenize(essay)
-#    
-#    for sentence in sentences:
-#        tokenized_sent = nltk.word_tokenize(sentence)
-#        pos_sent = nltk.pos_tag(tokenized_sent)
-#        
-#    for tup in pos_sent:
-#        if 'NN' in tup:
-#            for tup in pos_sent:
-#                if "VBZ" or "VBD" or "VBG" not in tup:
-#                    mistakes += 1
-#                elif "VBG" and 
+    results.write("0;0;")
+
+    formation_score = 5 - frags
+    if formation_score < 0:
+    	formation_score = 0
 
 
+    results.write(str(formation_score) + ";")
+
+    results.write(str(coherence) + ";")
+
+    results.write("0;")
+
+    results.write(str(final_score) + ";")
+
+    results.write(score + '\n')	
+
+
+
+nlp.close()
 
 results.close()	

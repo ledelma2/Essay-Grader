@@ -158,9 +158,13 @@ for file in files:
 
     for sentence in sentences:
         tokens = nlp.word_tokenize(sentence)
-        parsed = nlp.parse(sentence)
-        if 'FRAG' in parsed:
-            frags += 1
+        try:
+            parsed = nlp.parse(sentence)
+            if 'FRAG' in parsed:
+                frags += 1
+
+        except:
+            print(file)
 
     frag_score = 0
 
@@ -184,40 +188,35 @@ for file in files:
 
     score = ""
 
-    if final_score > 9:
+    if final_score > 11:
         score = "high"
-        print(file,": high")
     else:
         score = "low"
-        print(file,": low")
+    
+    print(file.rstrip(), ", ", score)
     
     
     results.write(str(spell_score) + ";")
 
-    results.write("0;0;0;0;0;0;")
+    results.write("0;0;")
 
-    results.write(score + '\n')
+    formation_score = 5 - frags
+    if formation_score < 0:
+    	formation_score = 0
 
 
-sentence = 'My dog with a broken leg I not want'
-#print('Tokenize:', nlp.word_tokenize(sentence))
-#print('Part of Speech:', nlp.pos_tag(sentence))
-#print('Constituency Parsing:', nlp.parse(sentence))
-sentence = 'Guangdong University of Foreign Studies is located in Guangzhou.'
-#print('Tokenize:', nlp.word_tokenize(sentence))
-#print('Part of Speech:', nlp.pos_tag(sentence))
-tree = nlp.parse(sentence)
+    results.write(str(formation_score) + ";")
 
-#print('Dependency Parsing:', nlp.dependency_parse(sentence))
-realtree = Tree.fromstring(tree)
-#print(realtree[0])
+    results.write(str(coherence) + ";")
 
+    results.write("0;")
+
+    results.write(str(final_score) + ";")
+
+    results.write(score + '\n')	
 
 
 
 nlp.close()
-
-
-
 
 results.close()	
